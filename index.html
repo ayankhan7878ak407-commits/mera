@@ -1,0 +1,149 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Mira</title>
+<style>
+:root{--bg:#f6f2fb;--bg2:#e3ecff;--panel:rgba(255,255,255,.62);--ink:#14204a;--mute:#5b6a99;--pink:#ff8fc2;--blue:#2f6bff;--line:rgba(47,107,255,.16);--ua:linear-gradient(135deg,#2f6bff,#6a8cff);--fs:16px}
+:root[data-theme=dark]{--bg:#0a1233;--bg2:#1a1550;--panel:rgba(255,255,255,.07);--ink:#eef1ff;--mute:#9aa8d8;--line:rgba(255,255,255,.12)}
+:root[data-accent=sunset]{--pink:#ff9a8f;--blue:#7b4dff;--ua:linear-gradient(135deg,#7b4dff,#b08cff)}
+:root[data-accent=ice]{--pink:#ffc2e0;--blue:#00b4ff;--ua:linear-gradient(135deg,#00b4ff,#5fd2ff)}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{font:var(--fs)/1.55 "Avenir Next","Trebuchet MS",system-ui,sans-serif;color:var(--ink);background:radial-gradient(900px 600px at 0 0,color-mix(in srgb,var(--pink) 35%,transparent),transparent),radial-gradient(900px 700px at 100% 100%,color-mix(in srgb,var(--blue) 30%,transparent),transparent),linear-gradient(var(--bg),var(--bg2));padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+button,select,input,textarea{font:inherit;color:inherit}button{cursor:pointer}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+#app{display:flex;height:100%}
+aside{width:290px;display:flex;flex-direction:column;gap:10px;padding:14px;background:var(--panel);backdrop-filter:blur(22px);border-right:1px solid var(--line);transition:transform .25s}
+.brand{display:flex;align-items:center;gap:10px;font-size:1.5em;font-weight:700;letter-spacing:-.02em}
+.orb{width:34px;height:34px;border-radius:50%;background:conic-gradient(from 0deg,var(--pink),var(--blue),#0a1233,var(--pink));animation:spin 8s linear infinite;box-shadow:0 0 24px color-mix(in srgb,var(--pink) 60%,transparent)}
+.orb.big{width:120px;height:120px}.orb.think{animation-duration:1.2s}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:9px 12px}
+.btn.pri{background:var(--ua);color:#fff;border:0}
+#list{flex:1;overflow:auto;display:flex;flex-direction:column;gap:4px}
+.ci{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:10px;cursor:pointer}
+.ci:hover,.ci.on{background:color-mix(in srgb,var(--pink) 22%,transparent)}
+.ci span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ci button{border:0;background:none;opacity:.6}
+main{flex:1;display:flex;flex-direction:column;min-width:0}
+header{display:flex;align-items:center;gap:10px;padding:10px 16px}
+header h2{margin:0;font-size:1em;flex:1}
+#dot{width:10px;height:10px;border-radius:50%;background:#e55}#dot.ok{background:#3c9}
+#menu{display:none}
+#msgs{flex:1;overflow:auto;padding:8px 16px 16px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth}
+.hero{margin:auto;text-align:center;max-width:460px}.hero h1{font-size:2em;margin:.6em 0 .2em;letter-spacing:-.03em}.hero p{color:var(--mute)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.m{max-width:min(720px,88%);padding:10px 14px;border-radius:18px;word-wrap:break-word;animation:in .25s}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+.m.u{align-self:flex-end;background:var(--ua);color:#fff;border-bottom-right-radius:5px}
+.m.a{align-self:flex-start;background:var(--panel);backdrop-filter:blur(16px);border:1px solid var(--line);border-left:4px solid var(--pink);border-bottom-left-radius:5px;box-shadow:0 8px 28px rgba(20,32,74,.1)}
+.meta{display:flex;gap:6px;align-items:center;font-size:.75em;opacity:.7;margin-top:4px}
+.meta button{border:0;background:none;padding:2px 4px;font-size:1em}
+pre{background:#0a1233;color:#dfe6ff;padding:10px;border-radius:10px;overflow:auto;position:relative}
+code{font-family:ui-monospace,Menlo,monospace;font-size:.9em}p code,.m code{background:rgba(120,140,255,.18);padding:1px 5px;border-radius:5px}pre code{background:none!important;padding:0}
+.typing i{display:inline-block;width:7px;height:7px;margin:0 2px;border-radius:50%;background:var(--pink);animation:b 1s infinite}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes b{50%{transform:translateY(-5px)}}
+.err{color:#d33}
+form{display:flex;gap:8px;align-items:flex-end;margin:0 16px 14px;padding:8px;background:var(--panel);backdrop-filter:blur(22px);border:1px solid var(--line);border-radius:22px}
+textarea{flex:1;resize:none;border:0;background:none;outline:none;max-height:140px;padding:8px}
+.ib{width:42px;height:42px;border-radius:50%;border:0;background:none;font-size:1.15em}.ib.on{background:var(--pink)}
+#send{background:var(--ua);color:#fff}
+dialog{border:1px solid var(--line);border-radius:20px;background:var(--bg);color:var(--ink);width:min(420px,92vw)}
+dialog label{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:10px 0}
+dialog select,dialog input{max-width:200px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:5px}
+@media(max-width:760px){aside{position:fixed;inset:0 auto 0 0;z-index:5;transform:translateX(-100%);background:var(--bg)}aside.open{transform:none}#menu{display:block}.m{max-width:94%}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body><div id="app">
+<aside id="side"><div class="brand"><div class="orb"></div>Mira</div>
+<button class="btn pri" id="new">New chat</button>
+<input class="btn" id="q" placeholder="Search conversations" aria-label="Search conversations">
+<div id="list"></div>
+<button class="btn" id="clear">Clear all history</button><button class="btn" id="gear">Settings</button></aside>
+<main><header><button class="btn" id="menu" aria-label="Conversations">☰</button><h2 id="title">New chat</h2><span id="stat" style="font-size:.8em;color:var(--mute)"></span><div id="dot"></div></header>
+<div id="msgs"></div>
+<form id="f"><button type="button" class="ib" id="att" title="Attach text file">📎</button><input type="file" id="file" hidden accept=".txt,.md,.py,.js,.json,.csv,.html,.css">
+<textarea id="in" rows="1" placeholder="Ask anything, or say hello" aria-label="Message"></textarea>
+<button type="button" class="ib" id="mic" title="Voice input">🎙️</button><button type="button" class="ib" id="send" title="Send">➤</button></form></main></div>
+<dialog id="dlg"><form method="dialog" style="display:block;border:0;margin:0;padding:0;background:none"><h3 style="margin-top:0">Settings</h3>
+<label>Theme<select id="s-theme"><option>dark</option><option>light</option></select></label>
+<label>Colours<select id="s-acc"><option value="">Pink + electric blue</option><option>sunset</option><option>ice</option></select></label>
+<label>Text size<input id="s-fs" type="range" min="13" max="22"></label>
+<label>Personality<select id="s-per"><option>witty</option><option>professional</option><option>casual</option><option>teacher</option></select></label>
+<label>Model<select id="s-mod"></select></label>
+<label>Voice<select id="s-voice"></select></label>
+<label>Speaking speed<input id="s-rate" type="range" min="0.6" max="1.6" step="0.1"></label>
+<label>Speak replies<input id="s-speak" type="checkbox"></label>
+<label>Voice conversation<input id="s-conv" type="checkbox"></label>
+<button type="button" class="btn pri" style="width:100%" id="done">Done</button></form></dialog>
+<script>
+window.addEventListener("error",e=>{const x=document.querySelector("#stat");if(x)x.textContent="Error: "+e.message});window.addEventListener("unhandledrejection",e=>{const x=document.querySelector("#stat");if(x)x.textContent="Error: "+(e.reason&&e.reason.message||e.reason)});
+const LS=(()=>{try{localStorage.setItem("_t","1");localStorage.removeItem("_t");return localStorage}catch(e){const m={};return{getItem:k=>k in m?m[k]:null,setItem:(k,v)=>{m[k]=String(v)}}}})();
+const SS=window.speechSynthesis||{cancel(){},speak(){},getVoices(){return[]}};
+let webllm=null;
+async function lib(){if(webllm)return webllm;for(const u of ["https://esm.run/@mlc-ai/web-llm@0.2.79","https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.79/+esm"]){try{return webllm=await import(u)}catch(e){}}throw Error("Could not load the AI library. Check your internet connection and try again.")}
+const $=s=>document.querySelector(s),R=document.documentElement;
+const MODELS={"Qwen2.5-1.5B-Instruct-q4f16_1-MLC":"Fast (1.5B)","Qwen2.5-3B-Instruct-q4f16_1-MLC":"Smarter (3B, more RAM)"};
+const STY={witty:"Warm, quick-witted, playful; light sarcasm when it fits.",professional:"Precise, formal, concise.",casual:"Relaxed and friendly.",teacher:"Patient; explain step by step with examples."};
+const S=Object.assign({theme:matchMedia("(prefers-color-scheme:light)").matches?"light":"dark",accent:"",fs:16,voice:"",rate:1,speak:false,conv:false,model:Object.keys(MODELS)[0],per:"witty"},JSON.parse(LS.getItem("mira")||"{}"));
+let chats={};try{chats=JSON.parse(LS.getItem("mira_chats")||"{}")}catch{}
+const persist=()=>{try{LS.setItem("mira_chats",JSON.stringify(chats))}catch{alert("Storage full. Delete old chats.")}};
+const save=()=>{LS.setItem("mira",JSON.stringify(S));R.dataset.theme=S.theme;R.dataset.accent=S.accent;R.style.setProperty("--fs",S.fs+"px")};save();
+let cid=null,busy=false,eng=null,loaded="";
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const md=s=>s.split("```").map((p,i)=>i%2?`<pre><code>${esc(p.slice(p.indexOf("\n")+1))}</code></pre>`:esc(p).replace(/`([^`]+)`/g,"<code>$1</code>").replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/^#+ (.*)$/gm,"<b>$1</b>").replace(/^[-*] /gm,"• ").replace(/\n/g,"<br>")).join("");
+const hm=t=>new Date(t*1000).toLocaleString([],{hour:"2-digit",minute:"2-digit",month:"short",day:"numeric"});
+function hero(){$("#msgs").innerHTML=`<div class="hero"><div class="orb big"></div><h1>Hi, I'm Mira.</h1><p>Runs fully in your browser. First message downloads the AI model (1-2 GB), so use Wi-Fi.</p><div class="chips">${["Weather in Kolkata","Time in Tokyo vs London","Explain black holes simply","Tell me a joke"].map(t=>`<button class="btn chip">${t}</button>`).join("")}</div></div>`;document.querySelectorAll(".chip").forEach(b=>b.onclick=()=>send(b.textContent))}
+function add(role,text,ts){const m=document.createElement("div");m.className="m "+(role=="user"?"u":"a");const b=document.createElement("div");b.innerHTML=md(text);m.append(b);const meta=document.createElement("div");meta.className="meta";meta.innerHTML=`<span>${hm(ts||Date.now()/1000)}</span>`;if(role!="user")meta.innerHTML+=`<button data-a=copy>Copy</button><button data-a=regen>Regenerate</button><button data-a=say>Speak</button>`;m.append(meta);m._b=b;m._t=text;$("#msgs").append(m);$("#msgs").scrollTop=1e9;return m}
+$("#msgs").onclick=e=>{const a=e.target.dataset.a,m=e.target.closest(".m");if(!a)return;if(a=="copy")navigator.clipboard.writeText(m._t).then(()=>e.target.textContent="Copied");if(a=="regen"&&!busy)send("",true);if(a=="say")speak(m._t)};
+// tools (browser only, no keys)
+const geo=async n=>{try{return(await(await fetch("https://geocoding-api.open-meteo.com/v1/search?count=1&name="+encodeURIComponent(n))).json()).results?.[0]}catch{}};
+const place=t=>(t.match(/\b(?:in|at|for|of)\s+([A-Za-z][A-Za-z .'-]{1,40}?)(?=\s+(?:tomorrow|today|now|right|tonight|currently)\b|[?.!,]|$)/i)||[])[1];
+const offTZ=p=>Intl.supportedValuesOf("timeZone").find(z=>z.endsWith("/"+p.trim().replace(/\b\w/g,c=>c.toUpperCase()).replace(/ /g,"_")));
+const fmt=tz=>new Intl.DateTimeFormat("en-GB",{timeZone:tz,dateStyle:"full",timeStyle:"short",timeZoneName:"short"}).format(new Date());
+const offH=tz=>{const v=new Intl.DateTimeFormat("en",{timeZone:tz,timeZoneName:"longOffset"}).formatToParts(new Date()).find(x=>x.type=="timeZoneName").value.match(/([+-])(\d+):?(\d+)?/);return v?(v[1]=="-"?-1:1)*(+v[2]+(+v[3]||0)/60):0};
+async function timeTool(t){const m=t.match(/between\s+(.+?)\s+and\s+(.+?)[?.!\s]*$/i),names=m?[m[1],m[2]]:[place(t)],out=[],o=[];
+ for(const n of names.filter(Boolean)){const g=await geo(n),tz=g?.timezone||offTZ(n);if(!tz){out.push(n+": location not found");continue}out.push(`${n}: ${fmt(tz)} (${tz})`);o.push(offH(tz))}
+ if(o.length==2)out.push("Difference: "+Math.abs(o[0]-o[1])+" hours");return out.join("\n")||"No location recognised. Ask which place."}
+async function weatherTool(t){const p=place(t);if(!p)return"No location recognised. Ask which place.";const g=await geo(p);if(!g)return`Could not find '${p}' (offline or unknown).`;
+ try{const r=await(await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${g.latitude}&longitude=${g.longitude}&timezone=auto&forecast_days=7&current=temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset,weather_code`)).json();
+ return`Weather for ${g.name}, ${g.country||""} (Open-Meteo, WMO codes):\n`+JSON.stringify({current:r.current,daily:r.daily})}catch(e){return"Weather service failed: "+e.message}}
+const intent=t=>/\b(weather|rain|raining|temperature|forecast|humidity|snow|sunrise|sunset)\b/i.test(t)?"weather":/\b(what time|current time|time in|time difference|what day is it)\b/i.test(t)?"time":"chat";
+// model
+async function ensure(){if(eng&&loaded==S.model)return;if(!navigator.gpu)throw Error("This browser has no WebGPU. Use the latest Chrome on Android 12+ with 6 GB+ RAM.");
+ const w=await lib();eng=await w.CreateMLCEngine(S.model,{initProgressCallback:p=>$("#stat").textContent=p.text.slice(0,50)});loaded=S.model;$("#stat").textContent="Model ready";$("#dot").className="ok"}
+async function send(text,regen=false){text=(text??$("#in").value).trim();if(busy||(!text&&!regen))return;SS.cancel();if(!$("#msgs .m"))$("#msgs").innerHTML="";
+ let c=chats[cid];
+ if(regen&&c){[...document.querySelectorAll(".m.a")].pop()?.remove();if(c.msgs.at(-1)?.role=="assistant")c.msgs.pop();text=c.msgs.at(-1)?.content}
+ else{if(!c){cid=String(Date.now());c=chats[cid]={title:text.slice(0,40),ts:0,msgs:[]}}c.msgs.push({role:"user",content:text,ts:Date.now()/1e3});add("user",text);$("#in").value="";fit()}
+ c.ts=Date.now()/1e3;persist();loadList();$("#title").textContent=c.title;
+ const m=add("a","",0);m._b.innerHTML='<span class="typing"><i></i><i></i><i></i></span>';busy=true;$("#send").textContent="■";document.querySelectorAll(".orb").forEach(o=>o.classList.add("think"));let out="";
+ try{await ensure();const k=intent(text),ctx=k=="weather"?await weatherTool(text):k=="time"?await timeTool(text):"";
+  let sys=`You are Mira, an intelligent, expressive assistant. Style: ${STY[S.per]} Today is ${new Date().toDateString()}. You have no live news or web access; say so for current-events questions instead of guessing. Reply in the user's language (Hindi, Hinglish or English). Be honest about uncertainty. Use markdown.`;
+  if(ctx)sys+=`\n\nLIVE DATA from tool '${k}' (trust this; report failures honestly):\n${ctx}`;
+  const msgs=[{role:"system",content:sys},...c.msgs.slice(-12).map(({role,content})=>({role,content}))];
+  for await(const ch of await eng.chat.completions.create({messages:msgs,stream:true})){out+=ch.choices[0]?.delta?.content||"";m._b.innerHTML=md(out);m._t=out;$("#msgs").scrollTop=1e9}}
+ catch(e){let g=e.message||String(e);if(/fetch|network|cache|load/i.test(g))g+=" Open this page from your https GitHub Pages link in Chrome (not inside the Claude app preview) and check your internet.";m._b.innerHTML=(out?md(out)+"<br>":"")+`<span class="err">${esc(g)}</span>`}
+ if(out){c.msgs.push({role:"assistant",content:out,ts:Date.now()/1e3});persist()}
+ busy=false;$("#send").textContent="➤";document.querySelectorAll(".orb").forEach(o=>o.classList.remove("think"));if(out&&(S.speak||S.conv))speak(out,()=>S.conv&&listen())}
+const go=()=>busy?(eng&&eng.interruptGenerate(),SS.cancel()):send();$("#f").onsubmit=e=>{e.preventDefault();go()};$("#send").onclick=go;$("#done").onclick=()=>$("#dlg").close();
+$("#in").onkeydown=e=>{if(e.key=="Enter"&&!e.shiftKey){e.preventDefault();go()}};
+const fit=()=>{const t=$("#in");t.style.height="auto";t.style.height=t.scrollHeight+"px"};$("#in").oninput=fit;
+function loadList(){const q=$("#q").value.toLowerCase();$("#list").innerHTML="";
+ Object.entries(chats).filter(([,c])=>!q||c.title.toLowerCase().includes(q)||c.msgs.some(x=>x.content.toLowerCase().includes(q))).sort((a,b)=>b[1].ts-a[1].ts).forEach(([id,c])=>{const d=document.createElement("div");d.className="ci"+(id==cid?" on":"");d.innerHTML=`<span>${esc(c.title)}</span><button title="Delete">✕</button>`;
+  d.onclick=()=>open(id);d.querySelector("button").onclick=e=>{e.stopPropagation();delete chats[id];persist();if(cid==id)reset();loadList()};$("#list").append(d)})}
+function open(id){cid=id;$("#title").textContent=chats[id].title;$("#msgs").innerHTML="";chats[id].msgs.forEach(x=>add(x.role,x.content,x.ts));$("#side").classList.remove("open");loadList()}
+function reset(){cid=null;$("#title").textContent="New chat";hero();$("#side").classList.remove("open");loadList()}
+$("#new").onclick=reset;$("#menu").onclick=()=>$("#side").classList.toggle("open");$("#q").oninput=loadList;
+$("#clear").onclick=()=>{if(confirm("Delete ALL conversations?")){chats={};persist();reset()}};
+$("#att").onclick=()=>$("#file").click();
+$("#file").onchange=async e=>{const f=e.target.files[0];if(!f)return;if(f.size>20000){alert("File too large (20 KB max).");return}$("#in").value+=`\n\n[${f.name}]\n\`\`\`\n${await f.text()}\n\`\`\`\n`;fit();e.target.value=""};
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null;
+function listen(){if(!SR){alert("Speech recognition isn't supported in this browser. Use Chrome.");return}SS.cancel();if(rec){rec.stop();return}rec=new SR();rec.lang=navigator.language;rec.interimResults=true;
+ rec.onresult=e=>{$("#in").value=[...e.results].map(r=>r[0].transcript).join("");fit()};rec.onend=()=>{rec=null;$("#mic").classList.remove("on");if($("#in").value.trim())send()};
+ rec.onerror=e=>{rec=null;$("#mic").classList.remove("on");if(!["no-speech","aborted"].includes(e.error))alert("Mic error: "+e.error)};rec.start();$("#mic").classList.add("on")}
+$("#mic").onclick=listen;
+function speak(t,cb){if(!window.SpeechSynthesisUtterance)return;const u=new SpeechSynthesisUtterance(t.replace(/```[\s\S]*?```/g," code block ").replace(/[*`#]/g,""));const v=SS.getVoices().find(v=>v.name==S.voice);if(v)u.voice=v;u.rate=S.rate;u.onend=cb||null;SS.speak(u)}
+function voices(){const v=SS.getVoices();$("#s-voice").innerHTML=v.map(x=>`<option>${esc(x.name)}</option>`).join("");$("#s-voice").value=S.voice||v[0]?.name||""}
+SS.onvoiceschanged=voices;
+$("#gear").onclick=()=>{$("#s-theme").value=S.theme;$("#s-acc").value=S.accent;$("#s-fs").value=S.fs;$("#s-rate").value=S.rate;$("#s-speak").checked=S.speak;$("#s-conv").checked=S.conv;voices();
+ $("#s-mod").innerHTML=Object.entries(MODELS).map(([k,v])=>`<option value="${k}">${v}</option>`).join("");$("#s-mod").value=S.model;$("#s-per").value=S.per;$("#dlg").showModal()};
+$("#dlg").onclose=()=>{Object.assign(S,{theme:$("#s-theme").value,accent:$("#s-acc").value,fs:+$("#s-fs").value,voice:$("#s-voice").value,rate:+$("#s-rate").value,speak:$("#s-speak").checked,conv:$("#s-conv").checked,model:$("#s-mod").value,per:$("#s-per").value});save();if(S.conv)listen()};
+$("#stat").textContent="v5 · "+(navigator.gpu?"model loads on first message":"No WebGPU in this browser");hero();loadList();
+</script></body></html>
